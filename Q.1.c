@@ -1,66 +1,54 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-struct node{
-    int a;
-    struct node*next;
-    struct node*prev;
-};
-
-struct node*create_node(int data){
-    struct node*cnode=(struct node*)malloc(sizeof(struct node*));
-    cnode->a=data;
-    cnode->next=NULL;
-    cnode->prev=NULL;
-    return cnode;
+void pop(int *top,int arr[]){
+    if(*top==-1){
+        printf("The stack is empty");
+    }
+    else{
+        int popped=arr[*top];
+        printf("The element at top was %d\n",popped);
+        (*top)--;
+    }
+    int popup=arr[*top];
+    printf("The element at top now is %d\n",popup);
 }
 
-void display(struct node*head){
-    while(head!=NULL){
-        printf("%d\n",head->a);
-        head=head->next;
+void push(int data,int arr[],int n,int *top){
+    if(*top==n-1){
+        printf("Stack is full");
     }
-}
+    else{
+        (*top)++;
+        arr[*top]=data;
+        int topnew=arr[*top];
+        printf("The top is now at %d\n",topnew);
+    }
+    printf("Current stack elements:\n");
+    for(int i=0;i<=*top;i++){
+        printf("%d\n",arr[i]);
+    }
 
-void display_reverse(struct node*head){
-    struct node*temp=head;
-    while(temp->next!=NULL){
-        temp=temp->next;
-    }
-    while(temp!=NULL){
-        printf("%d\n",temp->a);
-        temp=temp->prev;
-    }
-}
-
-struct node*input(int data,struct node*head){
-    struct node*nnode=create_node(data);
-    if(head==NULL){
-        head=nnode;
-        return head;
-    }
-    struct node*temp=head;
-    while(temp->next!=NULL){
-        temp=temp->next;
-    }
-    temp->next=nnode;
-    nnode->prev=temp;
-    return head;
 }
 
 int main(){
     int n;
-    struct node*nnode,*head;
-    head=NULL;
-    int data;
-    printf("Enter the number of elements you want to enter");
+    printf("Enter the number of elements you want to enter:");
     scanf("%d",&n);
+    int arr[n];
+    int top=-1;
     for(int i=0;i<n;i++){
-        scanf("%d",&data);
-        head=input(data,head);
+        scanf("%d",&arr[i]);
+        top++;
     }
-    printf("Doubly Linked list in forward direction:\n");
-    display(head);
-    printf("Doubly linked list in backward direction:\n");
-    display_reverse(head);
+    pop(&top,arr);
+
+    int data;
+    printf("Enter the element you want to push into the stack");
+    scanf("%d",data);
+    push(data,arr,n,&top);
+
+    
+    return 0;
 }
+
