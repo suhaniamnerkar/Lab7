@@ -1,55 +1,73 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 
-struct node{
-    int a;
-    struct node*next;
+#define MAX 100  // Maximum size of the stack
+
+struct Stack {
+    int arr[MAX];
+    int top;
 };
 
-struct node*create_node(int data){
-    struct node*cnode=(struct node*)malloc(sizeof(cnode));
-    cnode->a=data;
-    cnode->next=NULL;
-    return cnode;
+
+void initStack(struct Stack* stack) {
+    stack->top = -1;
 }
 
-void display(struct node*head){
-    struct node*ptr=head;
-    do{
-        printf("%d",ptr->a);
-        ptr=ptr->next;
-    }while(ptr!=head);
+
+int isEmpty(struct Stack* stack) {
+    return stack->top == -1;
 }
 
-struct node*input(int data,struct node*head){
-    struct node*nnode=create_node(data);
-    if(head==NULL){
-        head=nnode;
-        return head;
+
+void push(struct Stack* stack, int value) {
+    if (stack->top == MAX - 1) {
+        printf("Stack overflow\n");
+        return;
     }
-    struct node*temp=head;
-    while(temp->next!=NULL){
-        temp=temp->next;
-    }
-    temp->next=nnode;
-    nnode->next=head;
-    return head;
+    stack->arr[++stack->top] = value;
 }
 
-int main(){
-    int n,i;
-    struct node*nnode,*head;
-    head=NULL;
-    int data;
-    printf("Enter the number of elements you want to enter");
-    scanf("%d",&n);
-    for(i=0;i<n;i++){
-        scanf("%d",&data);
-        head=input(data,head);
+
+int pop(struct Stack* stack) {
+    if (isEmpty(stack)) {
+        printf("Stack underflow\n");
+        return -1;
+    }
+    return stack->arr[stack->top--];
+}
+
+
+int operate(int operand1, int operand2, char operator) {
+    switch (operator) {
+        case '+': return operand1 + operand2;
+        case '-': return operand1 - operand2;
+        case '*': return operand1 * operand2;
+        case '/': return operand1 / operand2;
+        default: return 0;
+    }
+}
+
+
+int evaluatePostfix(char* expression) {
+    struct Stack stack;
+    initStack(&stack);
+
+    for (int i = 0; expression[i] != '\0'; i++) {
+        char token = expression[i];
+
+        
+        if (isdigit(token)) {
+            push(&stack, token - '0');  
+        }
+        
+        else if (token == '+' || token == '-' || token == '*' || token == '/') {
+            int operand2 = pop(&stack);
+            int operand1 = pop(&stack);
+            int result = operate(operand1, operand2, token);
+            push(&stack, result);
+        }
     }
 
-    display(head);
-  
+    return pop(&stack);  
 
-    return 0;
-}
